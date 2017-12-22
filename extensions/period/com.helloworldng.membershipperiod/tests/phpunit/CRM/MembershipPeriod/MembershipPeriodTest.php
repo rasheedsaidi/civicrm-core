@@ -119,7 +119,7 @@ class CRM_MembershipPeriod_MembershipPeriodTest extends \PHPUnit_Framework_TestC
       'return' => "id",
     );
 
-    self::assertTrue(CRM_MembershipPeriod_Validator::validateCreateParams($params));
+    self::assertTrue(CRM_Membershipperiod_Validator::validateCreateParams($params));
   }
 
 }
