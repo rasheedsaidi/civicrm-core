@@ -286,6 +286,11 @@ return array(
     'class' => 'CRM_Cxn_DAO_Cxn',
     'table' => 'civicrm_cxn',
   ) ,
+  'CRM_Membershipterm_DAO_MembershipTerm' => array(
+    'name' => 'MembershipTerm',
+    'class' => 'CRM_Membershipterm_DAO_MembershipTerm',
+    'table' => 'civicrm_membershipterm',
+  ) ,
   'CRM_Core_DAO_Cache' => array(
     'name' => 'Cache',
     'class' => 'CRM_Core_DAO_Cache',

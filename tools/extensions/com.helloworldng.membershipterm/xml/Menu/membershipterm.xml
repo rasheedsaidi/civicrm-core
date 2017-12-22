@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/membershipterm</path>
+    <page_callback>CRM_Membershipterm_Page_MembershipTerm</page_callback>
+    <title>Membership Term Page</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+
+  <item>
+    <path>civicrm/membershipterm/view/contribution</path>
+    <page_callback>CRM_Membershipterm_Page_Contribution</page_callback>
+    <title>Contribution Associated with Membership Term</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+</menu>

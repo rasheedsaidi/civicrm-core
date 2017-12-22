@@ -31,4 +31,7 @@
 <xi:include href="Price/files.xml"             parse="xml" />
 <xi:include href="PCP/files.xml"             parse="xml" />
 <xi:include href="Cxn/files.xml"              parse="xml" />
+<tables xmlns:xi="http://www.w3.org/2001/XInclude">
+    <xi:include href="MembershipTerm.xml" parse="xml"/>
+</tables>
 </database>

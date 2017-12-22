@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<table>
+  <base>CRM/Membershipterm</base>
+  <class>MembershipTerm</class>
+  <name>civicrm_membershipterm</name>
+  <comment>To manage and display how many periods/terms of Membership a contact may have had.</comment>
+  <add>4.4</add>
+  <log>true</log>
+
+  <field>
+    <name>id</name>
+    <type>int unsigned</type>
+    <required>true</required>
+    <comment>Unique MembershipTerm ID</comment>
+    <add>4.4</add>
+  </field>
+  <primaryKey>
+    <name>id</name>
+    <autoincrement>true</autoincrement>
+  </primaryKey>
+
+  <field>
+    <name>contact_id</name>
+    <type>int unsigned</type>
+    <comment>FK to Contact</comment>
+    <add>4.4</add>
+  </field>
+  <foreignKey>
+    <name>contact_id</name>
+    <table>civicrm_contact</table>
+    <key>id</key>
+    <add>4.4</add>
+    <onDelete>CASCADE</onDelete>
+  </foreignKey>
+
+  <field>
+    <name>start_date</name>
+    <type>date</type>
+    <comment>Records the start date of a Contact's term/period</comment>
+    <add>4.4</add>
+  </field>
+
+  <field>
+    <name>end_date</name>
+    <type>date</type>
+    <comment>Records the end date of a Contact's term/period</comment>
+    <add>4.4</add>
+  </field>
+
+</table>
