@@ -20,4 +20,8 @@ class CRM_Membershipperiod_Validator {
 	public static function validateCreateParams($params) {
 		return self::validateMembershipId($params) && self::validateContactId($params) && self::validateDateFormat($params);
 	}
+
+	public static function isContributionRecorded($membership_id) {
+		
+	}
 }

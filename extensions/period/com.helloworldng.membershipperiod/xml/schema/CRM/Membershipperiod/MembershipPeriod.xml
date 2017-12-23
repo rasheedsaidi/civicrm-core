@@ -4,7 +4,7 @@
   <base>CRM/Membershipperiod</base>
   <class>MembershipPeriod</class>
   <name>civicrm_membershipperiod</name>
-  <comment>FIXME</comment>
+  <comment>Record Contact's Membership periods/terms</comment>
   <add>4.4</add>
   <log>true</log>
 
@@ -33,5 +33,52 @@
     <add>4.4</add>
     <onDelete>CASCADE</onDelete>
   </foreignKey>
+
+  <field>
+    <name>membership_id</name>
+    <type>int unsigned</type>
+    <required>true</required>
+    <comment>FK to Membership</comment>
+    <add>4.4</add>
+  </field>
+
+  <field>
+    <name>contribution_id</name>
+    <type>int unsigned</type>
+    <required>false</required>
+    <comment>FK to Contribution</comment>
+    <add>4.4</add>
+  </field>
+
+  <field>
+    <name>start_date</name>
+    <type>date</type>
+    <required>true</required>
+    <comment>Records the Membership start date</comment>
+    <add>4.4</add>
+  </field>
+
+  <field>
+    <name>end_date</name>
+    <type>date</type>
+    <comment>Records the Membership end date</comment>
+    <add>4.4</add>
+  </field>
+
+  <field>
+    <name>contribution_state</name>
+    <type>int unsigned</type>
+    <required>true</required>
+    <comment>Records the contribution state of each Membership</comment>
+    <add>4.4</add>
+  </field>
+
+  <field>
+    <name>comment</name>
+    <type>text</type>
+    <required>false</required>
+    <comment>Records any comments for the term</comment>
+    <add>4.4</add>
+  </field>
 
 </table>
