@@ -149,4 +149,15 @@ class CRM_MembershipPeriod_MembershipPeriodTest extends \PHPUnit_Framework_TestC
     );
   }
 
+  public function testFindContactMemberships() {
+    $memberships = CRM_Membershipperiod_BAO_Membership::findAll($this->contact_id);
+    $this->assertTrue(is_integer($memberships['count']));
+    $this->assertTrue(intval($memberships['count']) > 0);
+  }
+
+  public function testFindContactSingleMembershipRecord() {
+    $memberships = CRM_Membershipperiod_BAO_Membership::findOne($this->membership_id);
+    $this->assertEquals($memberships['id'], $this->membership_id);
+  }
+
 }
