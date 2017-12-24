@@ -27,6 +27,7 @@ class CRM_MembershipPeriod_MembershipPeriodTest extends \PHPUnit_Framework_TestC
   public $membership_end_date;
   public $membership_period_id;
   public $membership_type_id;
+  public $b;
 
   public function setUpHeadless() {
     // Civi\Test has many helpers, like install(), uninstall(), sql(), and sqlFile().
@@ -60,19 +61,23 @@ class CRM_MembershipPeriod_MembershipPeriodTest extends \PHPUnit_Framework_TestC
     $membership = civicrm_api3('Membership', 'create', array(
       'membership_type_id' => $this->membership_type_id,
       'contact_id' => $this->contact_id,
+      'start_date' => date('Y-m-d')
     ));
 
     $this->membership_id = $membership['id'];
     $this->membership_start_date = $membership['values'][$this->membership_id]['start_date'];
     $this->membership_end_date = $membership['values'][$this->membership_id]['end_date'];
 
-    $membership_period = civicrm_api3('MembershipPeriod', 'create', array(
+    $membership_params = array(
       'contact_id' => $this->contact_id,
       'membership_id' => $this->membership_id,
-      'start_date' => $this->membership_start_date,
-      'end_date' => $this->membership_end_date
-    ));
-    $this->membership_period_id = $membership_period['id'];
+      'start_date' => CRM_Membershipperiod_Utility::formatDate($this->membership_start_date), //$this->membership_start_date,
+      'end_date' => CRM_Membershipperiod_Utility::formatDate($this->membership_end_date), //date("Y-m-d", strtotime(date("Y-m-d", strtotime(date('Y-m-d'))) . " + 1 year")), //$this->membership_end_date
+      'contribution_state' => 0,
+      'comment' => 'comment'
+    );
+    $membership_period = CRM_Membershipperiod_BAO_MembershipPeriod::validateAndCreate($membership_params);    //civicrm_api3('MembershipPeriod', 'create', $membership_params);
+    $this->membership_period_id = $membership_period->id;
     parent::setUp();
   }
 
@@ -103,23 +108,45 @@ class CRM_MembershipPeriod_MembershipPeriodTest extends \PHPUnit_Framework_TestC
       'return' => "id",
     ));
 
-    $sql = "SELECT count(1) FROM `civicrm_membershipperiod` WHERE membership_id=%1";
+    $sql = "SELECT count(1) FROM `civicrm_membershipperiod` WHERE contact_id=".$this->contact_id;
     $params[1]=array($membership_period_id,'Integer');
     
     return (CRM_Core_DAO::singleValueQuery($sql, $params))? true: false;
+  }
+
+  public function testMembershipIsInteger() {
+    self::assertTrue(is_integer($this->membership_id));
+  }
+
+  public function testMembershipPeriodStartDateIsValid() {
+    self::assertEquals(date('Y-m-d', strtotime($this->membership_start_date)), date('Y-m-d'));
+  }
+
+  public function testMembershipPeriodEndDateHasValidFormat() {
+    self::assertTrue(CRM_Membershipperiod_Validator::validateDateFormat(date('Y-m-d', strtotime($this->membership_end_date))));
+  }
+
+  public function testFindAllContactMembershipPeriods() {
+    $membership_periods = CRM_Membershipperiod_BAO_MembershipPeriod::findAll($this->contact_id);
+    $this->assertTrue(is_integer($membership_periods['count']));
   }
 
   public function testMembershipPeriodIsCreated(){
     self::assertTrue($this->hasMembershipPeriodCreated());
   }
 
-  public function testMembershipIdIsRequiredToCreateMembershipTerm() {
-    $params = array(
-      'membership_id' => $this->membership_id,
+  public function testCreateMembershipPriosValidates() {
+    $params = $this->getTestParam();
+    self::assertTrue(CRM_Membershipperiod_Validator::validateCreateParams($params));
+  }
+
+  private function getTestParam() {
+    return array(
+      'membership_id' => 1,
+      'contact_id' => 1,
+      'start_date' => date('Y-m-d'),
       'return' => "id",
     );
-
-    self::assertTrue(CRM_Membershipperiod_Validator::validateCreateParams($params));
   }
 
 }

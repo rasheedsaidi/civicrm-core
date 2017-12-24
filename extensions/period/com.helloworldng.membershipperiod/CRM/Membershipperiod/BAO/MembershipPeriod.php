@@ -9,7 +9,7 @@ class CRM_Membershipperiod_BAO_MembershipPeriod extends CRM_Membershipperiod_DAO
    * @param array $params key-value pairs
    * @return CRM_Membershipperiod_DAO_MembershipPeriod|NULL
    */
-  protected function create($params) {
+  public static function create($params) {
     $className = 'CRM_Membershipperiod_DAO_MembershipPeriod';
     $entityName = 'MembershipPeriod';
     $hook = empty($params['id']) ? 'create' : 'edit';
@@ -29,7 +29,7 @@ class CRM_Membershipperiod_BAO_MembershipPeriod extends CRM_Membershipperiod_DAO
   * @param array $params key-value pairs
   * @return CRM_Membershipperiod_DAO_MembershipPeriod|NULL
   */
-  public static function validateAndCreate($params) {
+  public static function validateAndCreate($params) {    
     if(CRM_Membershipperiod_Validator::validateCreateParams($params)) {
       return self::create($params);
     } else {
@@ -43,7 +43,7 @@ class CRM_Membershipperiod_BAO_MembershipPeriod extends CRM_Membershipperiod_DAO
   * @param array $params key-value pairs
   * @return CRM_Membershipperiod_DAO_MembershipPeriod|NULL
   */
-  public static function find($contact_id) {
+  public static function findAll($contact_id) {
     if(is_integer($contact_id)) {
       return self::findByContactID($contact_id);
     } else {
@@ -58,10 +58,10 @@ class CRM_Membershipperiod_BAO_MembershipPeriod extends CRM_Membershipperiod_DAO
   * @access protected
   * @return array
   */
-  protected function findByContactID($contact_d) {           
+  public static function findByContactID($contact_id) {           
     $result = civicrm_api3('MembershipPeriod', 'get', array(
     'sequential' => 1,
-    'contact_id' => $id,
+    'contact_id' => $contact_id,
     'return' => array("start_date", "end_date", "contact_id", "contact_id.first_name", "contact_id.last_name"),
   ));
 
