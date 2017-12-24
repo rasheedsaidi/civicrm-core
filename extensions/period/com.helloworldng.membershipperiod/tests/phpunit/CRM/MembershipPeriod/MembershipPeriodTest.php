@@ -68,12 +68,30 @@ class CRM_MembershipPeriod_MembershipPeriodTest extends \PHPUnit_Framework_TestC
     $this->membership_start_date = $membership['values'][$this->membership_id]['start_date'];
     $this->membership_end_date = $membership['values'][$this->membership_id]['end_date'];
 
+    $financial_type = civicrm_api3('FinancialType', 'create', array(
+      'is_deductible' => 1,
+      'is_reserved' => 1,
+      'is_active' => 1,
+      'name' => "Monthly Pay",
+    ));
+
+    $financial_type_id = $financial_type['id'];
+
+    $contribution = civicrm_api3('Contribution', 'create', array(
+      'financial_type_id' => $financial_type_id,
+      'total_amount' => 4,
+      'contact_id' => $this->contact_id,
+    ));
+
+    $this->contribution_id = $contribution['id'];
+
     $membership_params = array(
       'contact_id' => $this->contact_id,
       'membership_id' => $this->membership_id,
       'start_date' => CRM_Membershipperiod_Utility::formatDate($this->membership_start_date), //$this->membership_start_date,
       'end_date' => CRM_Membershipperiod_Utility::formatDate($this->membership_end_date), //date("Y-m-d", strtotime(date("Y-m-d", strtotime(date('Y-m-d'))) . " + 1 year")), //$this->membership_end_date
       'contribution_state' => 0,
+      'contribution_id' => $this->contribution_id,
       'comment' => 'comment'
     );
     $membership_period = CRM_Membershipperiod_BAO_MembershipPeriod::validateAndCreate($membership_params);    //civicrm_api3('MembershipPeriod', 'create', $membership_params);
@@ -158,6 +176,17 @@ class CRM_MembershipPeriod_MembershipPeriodTest extends \PHPUnit_Framework_TestC
   public function testFindContactSingleMembershipRecord() {
     $memberships = CRM_Membershipperiod_BAO_Membership::findOne($this->membership_id);
     $this->assertEquals($memberships['id'], $this->membership_id);
+  }
+
+  public function testFindContactContributions() {
+    $contributions = CRM_Membershipperiod_BAO_Contribution::findAll($this->contact_id);
+    $this->assertTrue(is_integer($contributions['count']));
+    $this->assertTrue(intval($contributions['count']) > 0);
+  }
+
+  public function testFindContactSingleContributionRecord() {
+    $contribution = CRM_Membershipperiod_BAO_Contribution::findOne($this->contribution_id);
+    $this->assertEquals($contribution['id'], $this->contribution_id);
   }
 
 }
