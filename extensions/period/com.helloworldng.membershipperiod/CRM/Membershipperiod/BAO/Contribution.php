@@ -45,7 +45,31 @@ class CRM_Membershipperiod_BAO_Contribution {
       'id' => $id,
     ));
 
-    return $result;
+    return self::extractRecord($result);
+  }
+
+  /**
+  * Method to extract record items from findOne call
+  *
+  * @param array $record
+  * @return array
+  */
+  public static function extractRecord($result) {
+    if(empty($result)) {
+      return [];
+    }
+
+    $record = $result;
+    $params = array(
+      'amount' => $record['total_amount'],
+      'type' => $record['financial_type'],
+      'source' => $record['contribution_source'],
+      'payment_method' => $record['payment_instrument'],
+      'status' => $record['contribution_status'],
+      'receive_date' => $record['receive_date']
+    );
+
+    return $params;
   }
 
 

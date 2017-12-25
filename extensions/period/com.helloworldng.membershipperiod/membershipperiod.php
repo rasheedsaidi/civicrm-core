@@ -150,3 +150,28 @@ function membershipperiod_civicrm_navigationMenu(&$menu) {
   ));
   _membershipperiod_civix_navigationMenu($menu);
 } // */
+
+/**
+* Implements hook_civicrm_post() for MembershipPeriod extension
+*
+*/
+function membershipperiod_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
+  CRM_Membershipperiod_Hook::post($op, $objectName, $objectId, $objectRef);
+}
+
+function membershipperiod_civicrm_tabset($tabsetName, &$tabs, $context) {
+  if ($tabsetName == 'civicrm/contact/view') {
+    $contactID = $context['contact_id'];
+    $membershipperiods = CRM_Membershipperiod_BAO_MembershipPeriod::findAll($contactID);
+    $count = 0;
+    if($membershipperiods && $membershipperiods['count']) {
+      $count = $membershipperiods['count'];
+    }
+    $url = CRM_Utils_System::url( 'civicrm/membership-period', "reset=1&snippet=1&force=1&cid=$contactID" );
+    $tabs[] = array( 'id'    => 'membershipperiod',
+      'url'   => $url,
+      'title' => 'Membership Periods <em>' . $count . '</em>',
+      'weight' => 100,
+    );
+  }
+}

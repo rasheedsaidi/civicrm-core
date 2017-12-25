@@ -44,15 +44,16 @@ class CRM_Membershipperiod_BAO_MembershipPeriod extends CRM_Membershipperiod_DAO
   * @return CRM_Membershipperiod_DAO_MembershipPeriod|NULL
   */
   public static function findAll($contact_id) {
-    if(is_integer($contact_id)) {
-      return self::findByContactID($contact_id);
+    $cid = intval($contact_id);
+    if(is_integer($cid)) {
+      return self::findByContactID($cid);
     } else {
       return [];
     }
   }
 
   /**
-  * Method findContactMembershipPeriods
+  * Method findByContactID
   *
   * @param int $contact_id
   * @access protected
@@ -60,26 +61,39 @@ class CRM_Membershipperiod_BAO_MembershipPeriod extends CRM_Membershipperiod_DAO
   */
   public static function findByContactID($contact_id) {           
     $result = civicrm_api3('MembershipPeriod', 'get', array(
-    'sequential' => 1,
-    'contact_id' => $contact_id,
-    'return' => array("start_date", "end_date", "contact_id", "contact_id.first_name", "contact_id.last_name"),
-  ));
+      'sequential' => 1,
+      'contact_id' => $contact_id,
+      'return' => array("start_date", "end_date", "contact_id", "contact_id.first_name", "contact_id.last_name", "membership_id", "contribution_id"),
+    ));
 
-  return $result;
+    return $result;
   }
 
   /**
-  * Method to find Contact's list of recorded contributions
+  * Method findByMembershipID
   *
-  * @param $contact_id
-  * return array
+  * @param int $contact_id
+  * @access protected
+  * @return array
   */
-  public static function findContactContributions($contact_id) {
-    $result = civicrm_api3('Contribution', 'get', array(
+  public static function findByMembershipID($membership_id) {           
+    $result = civicrm_api3('MembershipPeriod', 'getsingle', array(
       'sequential' => 1,
-      'contact_id' => $id
+      'membership_id' => $membership_id
     ));
 
+    return $result;
+  }
+
+  /**
+  * Method to modify MembershipPeriods
+  *
+  * @param int $contact_id
+  * @access protected
+  * @return array
+  */
+  public static function edit($params) {           
+    $result = civicrm_api3('MembershipPeriod', 'create', $params);
     return $result;
   }
 

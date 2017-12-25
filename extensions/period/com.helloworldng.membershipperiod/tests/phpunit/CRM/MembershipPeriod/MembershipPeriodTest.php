@@ -85,16 +85,10 @@ class CRM_MembershipPeriod_MembershipPeriodTest extends \PHPUnit_Framework_TestC
 
     $this->contribution_id = $contribution['id'];
 
-    $membership_params = array(
-      'contact_id' => $this->contact_id,
-      'membership_id' => $this->membership_id,
-      'start_date' => CRM_Membershipperiod_Utility::formatDate($this->membership_start_date), //$this->membership_start_date,
-      'end_date' => CRM_Membershipperiod_Utility::formatDate($this->membership_end_date), //date("Y-m-d", strtotime(date("Y-m-d", strtotime(date('Y-m-d'))) . " + 1 year")), //$this->membership_end_date
-      'contribution_state' => 0,
-      'contribution_id' => $this->contribution_id,
-      'comment' => 'comment'
-    );
-    $membership_period = CRM_Membershipperiod_BAO_MembershipPeriod::validateAndCreate($membership_params);    //civicrm_api3('MembershipPeriod', 'create', $membership_params);
+    $b = (object) $membership['values'][$this->membership_id];
+    $membership_params = CRM_Membershipperiod_Hook::getCreateMembershipPeriodParams($b);
+    $membership_period = CRM_Membershipperiod_BAO_MembershipPeriod::validateAndCreate($membership_params);  
+    //$membership_period = CRM_Membershipperiod_Hook::post('create', 'Membership', $this->membership_id, $b);
     $this->membership_period_id = $membership_period->id;
     parent::setUp();
   }
@@ -126,7 +120,7 @@ class CRM_MembershipPeriod_MembershipPeriodTest extends \PHPUnit_Framework_TestC
       'return' => "id",
     ));
 
-    $sql = "SELECT count(1) FROM `civicrm_membershipperiod` WHERE contact_id=".$this->contact_id;
+    $sql = "SELECT count(1) FROM `civicrm_membershipperiod` WHERE membership_id=".$this->membership_id;
     $params[1]=array($membership_period_id,'Integer');
     
     return (CRM_Core_DAO::singleValueQuery($sql, $params))? true: false;
@@ -187,6 +181,20 @@ class CRM_MembershipPeriod_MembershipPeriodTest extends \PHPUnit_Framework_TestC
   public function testFindContactSingleContributionRecord() {
     $contribution = CRM_Membershipperiod_BAO_Contribution::findOne($this->contribution_id);
     $this->assertEquals($contribution['id'], $this->contribution_id);
+  }
+
+  public function testEditMembershipPeriod() {
+    $params = [
+      'id' => $this->membership_period_id,
+      //'contact_id' => $this->contact_id,
+      //'membership_id' => $this->membership_id,
+      'contribution_id' => $this->contribution_id,
+      'contribution_state' => 1,
+      //'comment' => '',
+    ];
+
+    $membership_period = CRM_Membershipperiod_BAO_MembershipPeriod::edit($params);
+    $this->assertEquals($membership_period['id'], $this->membership_period_id);
   }
 
 }
